@@ -3,10 +3,7 @@
 ## Usage
 
 ```shell
-python3 map-services-to-cluster.py [env]
-```
-
-Example: `dev` env
-```shell
-$ python3 map-services-to-cluster.py dev
+python3 atlas.py              <--- Generate Atlas Cluster Map
+python3 gitops.py             <--- Map Services to Atlas based on GitOps
+python3 main.py               <--- Generate CSV "result.csv"
 ```
