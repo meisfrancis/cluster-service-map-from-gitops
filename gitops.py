@@ -1,7 +1,6 @@
 import json
 import yaml
 import os
-import sys
 import subprocess
 import re
 
@@ -9,7 +8,7 @@ os.environ['AWS_PROFILE'] = 'setel'
 
 GITOPS_ROOT_DIR = '/Volumes/Work/code/setel/SRE/gitops'
 MONGODB_SHARED_SUB_DIR = 'mongodb-shared'
-ENVIRONMENT = ['dev', 'pre-prod', 'prod', 'staging', 'sandbox']
+ENVIRONMENT = ['dev', 'pre-prod', 'staging', 'sandbox', 'prod']
 
 ProjectName = str
 ClusterHostVarName = str
@@ -47,11 +46,12 @@ def load_mongo_secret() -> SecretDict:
 
 def generate_name_host_dict(data: SecretDict) -> ClusterServiceMap:
     cluster_list = {}
-    for projects in data.values():
+    for env, projects in data.items():
         for cluster_details in projects.values():
             for val in cluster_details.values():
                 if not cluster_list.get(val):
                     cluster_list[val] = {
+                        "env": env,
                         "services": set()
                     }
     return cluster_list

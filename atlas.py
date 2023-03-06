@@ -5,6 +5,7 @@ orgs = {}
 projects = {}
 clusters = {}
 cluster_links_map = {}
+atlat_url_tpl = 'https://cloud.mongodb.com/v2/{project_id}#/clusters/detail/{cluster_name}'
 
 
 async def fetch_atlas(cmd):
@@ -50,8 +51,14 @@ async def attach_clusters(project_id):
         cluster_links.append(host_cutter(item['connectionStrings']['standardSrv']))
         clusters = clusters | {
             item['name']: {
-                              k: v for k, v in item.items() if k in ['id', 'name', 'groupId']
-                          } | {'links': cluster_links}
+                              k: v for k, v in item.items() if k in ['name', 'groupId']
+                          } |
+                          {
+                              'node_links': cluster_links
+                          } |
+                          {
+                              'atlas_url': atlat_url_tpl.format(project_id=item['groupId'], cluster_name=item['name'])
+                          }
         }
         global cluster_links_map
         cluster_links_map = cluster_links_map | {link: item['name'] for link in cluster_links}
